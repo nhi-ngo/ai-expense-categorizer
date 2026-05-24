@@ -30,6 +30,7 @@ function App() {
 								amount: row.amount,
 								category: res.data.category,
 								confidence: res.data.confidence,
+								needsReview: res.data.confidence < 0.8,
 								reason: res.data.reason,
 							};
 						}),
@@ -62,6 +63,7 @@ function App() {
 						<th>Category</th>
 						<th>Confidence</th>
 						<th>Reason</th>
+						<th>Status</th>
 					</tr>
 				</thead>
 
@@ -70,9 +72,36 @@ function App() {
 						<tr key={i}>
 							<td>{t.description}</td>
 							<td>{t.amount}</td>
-							<td>{t.category}</td>
+							<td>
+								<select
+									value={t.category}
+									onChange={(e) => {
+										const updated = [...transactions];
+										updated[i].category = e.target.value;
+										updated[i].needsReview = false;
+										setTransactions(updated);
+									}}
+								>
+									{[
+										'Food',
+										'Transport',
+										'Housing',
+										'Utilities',
+										'Entertainment',
+										'Shopping',
+										'Software',
+										'Healthcare',
+										'Other',
+									].map((c) => (
+										<option key={c} value={c}>
+											{c}
+										</option>
+									))}
+								</select>
+							</td>
 							<td>{t.confidence}</td>
 							<td>{t.reason}</td>
+							<td>{t.needsReview ? '⚠️ Needs Review' : '✅ Approved'}</td>
 						</tr>
 					))}
 				</tbody>
